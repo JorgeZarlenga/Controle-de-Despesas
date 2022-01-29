@@ -345,12 +345,37 @@ function ordenarData() {
     listOfObjects.forEach(function name(despesa) {
         // console.log('data: ' + despesa.data.substring(6, despesa.data.length));
         despesa['ano'] = despesa.data.substring(6, despesa.data.length);       
-        despesa['dia'] = despesa.data.substring(0, 2);       
         despesa['mes'] = despesa.data.substring(3, 5);
-        // delete despesa.data;       
+        despesa['dia'] = despesa.data.substring(0, 2);       
+        // delete despesa.data;
+        despesa['data'] = new Date(despesa.data.substring(6, despesa.data.length), despesa.data.substring(3, 5) - 1, despesa.data.substring(0, 2));
     })
 
+    console.log('desordenado');
+    
     console.log(listOfObjects);
+
+    if (true) {
+        listOfObjects.sort((a, b) => (a.data > b.data) ? 1 : -1);
+    } else {
+        listOfObjects.sort((a, b) => (a.data < b.data) ? 1 : -1);
+    }
+
+
+    console.log('ordenado');
+    
+    console.log(listOfObjects);
+
+
+    var arr = [[1,2,8,9,9]
+];
+
+    function isArrayIsSorted (arr) {
+      return arr.slice(1).every((item, i) => arr[i] <= item)
+    }
+    
+
+    console.log(isArrayIsSorted(arr));
 
     // for (const despesa in listOfObjects) {
     //     if (Object.hasOwnProperty.call(listOfObjects, despesa)) {
