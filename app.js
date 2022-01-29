@@ -227,6 +227,7 @@ function carregarDespesas(despesas) {
     // Selecionando o elemento tbody da tabela (com try, visto que o método pode ser chamado após consulta e não ter nenhum dado ainda):
     try {
         let listaDespesas = document.getElementById('listaDespesas');
+        // Limpeza da lista para renderizar novamente as despesas:
         listaDespesas.innerHTML = '';
     } catch (error) {
         console.log(error);
@@ -239,11 +240,14 @@ function carregarDespesas(despesas) {
     //             <td>R$444,75</td>
     //           </tr>
 
+    console.log('despesas: ');
+    console.log(despesas);
+
     // Percorrendo o array despesas, listando cada despesa de forma dinâmica:
-    despesas.forEach(function(d) {
+    despesas.forEach(function(despesa) {
 
         console.log('itera: ');
-        console.log(d);
+        console.log(despesa);
         
         // Criando a linha (tr):
         let linha = listaDespesas.insertRow();
@@ -252,50 +256,51 @@ function carregarDespesas(despesas) {
 
         // Ajustando o 0 antes de dia e mês:
 
-        if (d.dia <= 9) {
-            d.dia = '0' + d.dia;
+        if (despesa.dia <= 9) {
+            despesa.dia = '0' + despesa.dia;
         }
-        if (d.mes <= 9) {
-            d.mes = '0' + d.mes;
+        if (despesa.mes <= 9) {
+            despesa.mes = '0' + despesa.mes;
         }
-        linha.insertCell(0).innerHTML = `${d.dia}/${d.mes}/${d.ano}`;        
+        linha.insertCell(0).innerHTML = `${despesa.dia}/${despesa.mes}/${despesa.ano}`;        
         // Ajustando o tipo:
-        switch (d.tipo) {
+        switch (despesa.tipo) {
             case '1':
-                d.tipo = 'Alimentação'
+                despesa.tipo = 'Alimentação'
                 break;
             case '2':
-                d.tipo = 'Educação'
+                despesa.tipo = 'Educação'
                 break;
             case '3':
-                d.tipo = 'Lazer'
+                despesa.tipo = 'Lazer'
                 break;
             case '4':
-                d.tipo = 'Saúde'
+                despesa.tipo = 'Saúde'
                 break;
             case '5':
-                d.tipo = 'Transporte'
+                despesa.tipo = 'Transporte'
                 break;
             default:
                 break;
         }
-        linha.insertCell(1).innerHTML = d.tipo;
-        linha.insertCell(2).innerHTML = d.descricao;
-        linha.insertCell(3).innerHTML = d.valor;
+        linha.insertCell(1).innerHTML = despesa.tipo;
+        linha.insertCell(2).innerHTML = despesa.descricao;
+        linha.insertCell(3).innerHTML = despesa.valor;
 
         // Criação do botão:
         let btn = document.createElement("button");
         btn.className = 'btn btn-danger';
         
-        // Inclusão de texto com o Font-Awrsome:
+        // Inclusão de texto com o Font-Awesome:
         btn.innerHTML = '<i class="fas fa-times"></i>';
+        btn.id = despesa.id;
         btn.onclick = function() {
-            console.log(d.id);
+            console.log(despesa.id);
             // Dialog de sucesso
             document.querySelector('.modal-header').className = 'modal-header text-success';
             document.querySelector('.modal-title').innerHTML = 'Deletar registro';
             document.getElementById("modalBody").innerHTML = 'Deseja deletar este registro?';
-            document.getElementById("idToDelete").value = d.id;
+            document.getElementById("idToDelete").value = despesa.id;
             $('#modalConfirmaExclusao').modal('show');
         }
         
@@ -310,28 +315,66 @@ function confirmarExclusao() {
 }
 
 function ordenarData() {
-    console.log('teste');
     let listaDespesas = document.getElementById('listaDespesas');
-    console.log(listaDespesas.rows.length);
+    let tamanhoLista = listaDespesas.rows.length;
 
-    for (let i = 0; i < listaDespesas.rows.length; i++) {
-        //gets cells of current row
-        let row = listaDespesas.rows.item(i).cells;
+    let props = ['data', 'tipo', 'descricao', 'valor', 'id'];
+    var listOfObjects = [];
 
-        console.log(row);
+    for (var row = 0; row < tamanhoLista; row++) {
+        console.log('Teste')
+        var singleObj = {};
         
-        for (let j = 0; j < row.rows.length; j++) {
-            //gets cells of current row
-            let data = row.rows.item(j).cells;
-            console.log('data:' + data);
+        let comprimentoLinha = listaDespesas.rows[row].cells.length;
+        for (var column = 0; column < comprimentoLinha; column++) {       
+            console.log('props column: ' + props[column]);
+            // Caso seja a propriedade 'id':
+            if (column == 4) {
+                // let substringId = listaDespesas.rows[row].cells[column].innerHTML.indexOf('id=\\');
+                // singleObj[props[column]] = (listaDespesas.rows[row].cells[column].innerHTML);
+                singleObj[props[column]] = parseInt(listaDespesas.rows[row].cells[column].innerHTML.substring(35, 36));
+            } else {
+                singleObj[props[column]] = listaDespesas.rows[row].cells[column].innerHTML;
+            }     
         }
-
-        /* //gets amount of cells of current row
-        var cellLength = oCells.length;
-
-        //loops through each cell in current row
-        for(var j = 0; j < cellLength; j++){
-            /* get your cell info here */
-            /* var cellVal = oCells.item(j).innerHTML; */
+        listOfObjects.push(singleObj);
     }
+
+    // console.log(listOfObjects);
+
+    listOfObjects.forEach(function name(despesa) {
+        // console.log('data: ' + despesa.data.substring(6, despesa.data.length));
+        despesa['ano'] = despesa.data.substring(6, despesa.data.length);       
+        despesa['dia'] = despesa.data.substring(0, 2);       
+        despesa['mes'] = despesa.data.substring(3, 5);
+        // delete despesa.data;       
+    })
+
+    console.log(listOfObjects);
+
+    // for (const despesa in listOfObjects) {
+    //     if (Object.hasOwnProperty.call(listOfObjects, despesa)) {
+    //         const element = listOfObjects[despesa];
+            
+    //     }
+    
+    
+    // const nomes = ['Whinds', 'Freeway', 'Teste', 'Maria'];
+
+    // nomes.forEach(function(nome, i) {
+    //     console.log('[forEach]', nome, i);
+    // })
+
+    // var person = {
+    //     firstName:"John",
+    //     lastName:"Doe",
+    //     age:50,
+    //     eyeColor:"blue"
+    // };
+
+    // console.log(person);
+    
+    // delete person.age;  // or delete person["age"];
+
+    // console.log(person);
 }   
