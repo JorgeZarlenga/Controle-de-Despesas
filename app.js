@@ -323,8 +323,8 @@ function confirmarExclusao() {
 
 function ordenarDespesas(event) {
 
-    var source = event.target || event.srcElement;
-    console.log('source: ' + source);
+    let tag = window.event.target.id;
+    console.log('tag: ' + tag);
     
     let listaDespesas = document.getElementById('listaDespesas');
     let tamanhoLista = listaDespesas.rows.length;
