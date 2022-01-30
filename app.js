@@ -321,7 +321,11 @@ function confirmarExclusao() {
     bd.remover(document.getElementById("idToDelete").value);   
 }
 
-function ordenarData() {
+function ordenarDespesas(event) {
+
+    var source = event.target || event.srcElement;
+    console.log('source: ' + source);
+    
     let listaDespesas = document.getElementById('listaDespesas');
     let tamanhoLista = listaDespesas.rows.length;
 
@@ -372,7 +376,7 @@ function ordenarData() {
         console.log(listOfObjects[index + 1].data);
         console.log(listOfObjects[index].data);
         
-        // Lógica para
+        // Lógica para alternar entre crescente e decrescente:
         if (listOfObjects[index].data <= listOfObjects[index + 1].data) {
             console.log('crescente');
             ordem = 'decrescente';
