@@ -32,7 +32,7 @@ class Despesa {
 class Bd {
     constructor() {
         let id = localStorage.getItem('id');
-        console.log('idd: ' + id);
+        // console.log('idd: ' + id);
         
 
         if (id === null) {
@@ -177,6 +177,9 @@ function carregarListaDespesas() {
 
     despesas = bd.recuperarTodosRegistros();
 
+    console.log(despesas);
+    
+
     carregarDespesas(despesas);
 }
 
@@ -225,6 +228,10 @@ function pesquisarDespesa() {
 
 function carregarDespesas(despesas) {
     // Selecionando o elemento tbody da tabela (com try, visto que o método pode ser chamado após consulta e não ter nenhum dado ainda):
+
+    console.log('despesas recebidas:');
+    console.log(despesas);
+    
     try {
         let listaDespesas = document.getElementById('listaDespesas');
         // Limpeza da lista para renderizar novamente as despesas:
@@ -240,14 +247,14 @@ function carregarDespesas(despesas) {
     //             <td>R$444,75</td>
     //           </tr>
 
-    console.log('despesas: ');
-    console.log(despesas);
+    // console.log('despesas: ');
+    // console.log(despesas);
 
     // Percorrendo o array despesas, listando cada despesa de forma dinâmica:
     despesas.forEach(function(despesa) {
 
-        console.log('itera: ');
-        console.log(despesa);
+        // console.log('itera: ');
+        // console.log(despesa);
         
         // Criando a linha (tr):
         let linha = listaDespesas.insertRow();
@@ -256,10 +263,10 @@ function carregarDespesas(despesas) {
 
         // Ajustando o 0 antes de dia e mês:
 
-        if (despesa.dia <= 9) {
+        if (despesa.dia <= 9 && !despesa.dia.includes('0')) {
             despesa.dia = '0' + despesa.dia;
         }
-        if (despesa.mes <= 9) {
+        if (despesa.mes <= 9 && !despesa.mes.includes('0')) {
             despesa.mes = '0' + despesa.mes;
         }
         linha.insertCell(0).innerHTML = `${despesa.dia}/${despesa.mes}/${despesa.ano}`;        
@@ -327,20 +334,24 @@ function ordenarData() {
         
         let comprimentoLinha = listaDespesas.rows[row].cells.length;
         for (var column = 0; column < comprimentoLinha; column++) {       
-            console.log('props column: ' + props[column]);
+            // console.log('props column: ' + props[column]);
             // Caso seja a propriedade 'id':
             if (column == 4) {
-                // let substringId = listaDespesas.rows[row].cells[column].innerHTML.indexOf('id=\\');
+                let string = listaDespesas.rows[row].cells[column].innerHTML;
+                let substringId = listaDespesas.rows[row].cells[column].innerHTML.indexOf('id=');
                 // singleObj[props[column]] = (listaDespesas.rows[row].cells[column].innerHTML);
-                singleObj[props[column]] = parseInt(listaDespesas.rows[row].cells[column].innerHTML.substring(35, 36));
-            } else {
+                let id = string.substring(substringId, string.indexOf('>')).replace('id=', '').replaceAll('"', '');
+                // console.log('parseInt(listaDespesas.rows[row].cells[column].innerHTML.substring(35, 36): ' + id);
+                singleObj[props[column]] = parseInt(id);
+            } else {     
                 singleObj[props[column]] = listaDespesas.rows[row].cells[column].innerHTML;
-            }     
+            }   
         }
+        console.log('singleOBJ:');
+        console.log(singleObj);
+
         listOfObjects.push(singleObj);
     }
-
-    // console.log(listOfObjects);
 
     listOfObjects.forEach(function name(despesa) {
         // console.log('data: ' + despesa.data.substring(6, despesa.data.length));
@@ -349,57 +360,38 @@ function ordenarData() {
         despesa['dia'] = despesa.data.substring(0, 2);       
         // delete despesa.data;
         despesa['data'] = new Date(despesa.data.substring(6, despesa.data.length), despesa.data.substring(3, 5) - 1, despesa.data.substring(0, 2));
-    })
+    });
 
-    console.log('desordenado');
-    
+    console.log('listOriginal');
     console.log(listOfObjects);
+    
+    let ordem = 'decrescente';
 
-    if (true) {
+    for (let index = 0; index < listOfObjects.length - 1; index++) {
+
+        console.log(listOfObjects[index + 1].data);
+        console.log(listOfObjects[index].data);
+        
+        // Lógica para
+        if (listOfObjects[index].data <= listOfObjects[index + 1].data) {
+            console.log('crescente');
+            ordem = 'decrescente';
+        } else if (listOfObjects[index].data >= listOfObjects[index + 1].data) {
+            ordem = 'crescente';
+        } else {
+            ordem = 'crescente';
+        }
+    }
+
+    console.log('ordem: ' + ordem);
+    
+    if (ordem == 'crescente') {
         listOfObjects.sort((a, b) => (a.data > b.data) ? 1 : -1);
-    } else {
+    } else if (ordem == 'decrescente') {
         listOfObjects.sort((a, b) => (a.data < b.data) ? 1 : -1);
     }
 
+    // console.log(listOfObjects);
 
-    console.log('ordenado');
-    
-    console.log(listOfObjects);
-
-
-    var arr = [[1,2,8,9,9]
-];
-
-    function isArrayIsSorted (arr) {
-      return arr.slice(1).every((item, i) => arr[i] <= item)
-    }
-    
-
-    console.log(isArrayIsSorted(arr));
-
-    // for (const despesa in listOfObjects) {
-    //     if (Object.hasOwnProperty.call(listOfObjects, despesa)) {
-    //         const element = listOfObjects[despesa];
-            
-    //     }
-    
-    
-    // const nomes = ['Whinds', 'Freeway', 'Teste', 'Maria'];
-
-    // nomes.forEach(function(nome, i) {
-    //     console.log('[forEach]', nome, i);
-    // })
-
-    // var person = {
-    //     firstName:"John",
-    //     lastName:"Doe",
-    //     age:50,
-    //     eyeColor:"blue"
-    // };
-
-    // console.log(person);
-    
-    // delete person.age;  // or delete person["age"];
-
-    // console.log(person);
+    carregarDespesas(listOfObjects);
 }   
